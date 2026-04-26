@@ -7,12 +7,15 @@ Model 1 : target = GDP per Capita
 Model 2 : target = Life Expectancy
           predictors = Basic Drinking Water Access, Access to Electricity, GDP per Capita
 
-Splits   : 70 % train / 30 % test
-Outputs  : regression_report.txt  (R^2, RMSE, coefficients, p-values, ...)
+Splits   : 75 % train / 25 % test  (random seed drawn every run)
+Outputs  : regression_report.txt
+           model1_pred_vs_actual.png , model1_residuals.png
+           model2_pred_vs_actual.png , model2_residuals.png
 """
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 import statsmodels.api as sm
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
@@ -38,10 +41,53 @@ df[GDP_CAP] = df[GDP_COL] / df[POP_COL] * 1000
 
 
 # ---------------------------------------------------------------------------
-# 2. Generic helper that fits BOTH a sklearn model (for train/test R^2)
-#    and a statsmodels OLS (for p-values / full summary)
+# 2. Plotting helpers -- produces the TWO required graphs per regression
 # ---------------------------------------------------------------------------
-def run_regression(data, target, predictors, title):
+def plot_pred_vs_actual(y_train, yhat_train, y_test, yhat_test,
+                        target, r2_train, r2_test, filename, title):
+    plt.figure(figsize=(7, 6))
+    plt.scatter(y_train, yhat_train, alpha=0.7, label=f"Train (R²={r2_train:.3f})",
+                color="steelblue", edgecolor="k")
+    plt.scatter(y_test,  yhat_test,  alpha=0.9, label=f"Test  (R²={r2_test:.3f})",
+                color="darkorange", marker="^", edgecolor="k")
+
+    # perfect prediction line y = x
+    all_y = np.concatenate([y_train, y_test, yhat_train, yhat_test])
+    lo, hi = all_y.min(), all_y.max()
+    plt.plot([lo, hi], [lo, hi], "k--", lw=1, label="Ideal  (y = x)")
+
+    plt.xlabel(f"Actual  {target}")
+    plt.ylabel(f"Predicted  {target}")
+    plt.title(f"Predicted vs Actual — {title}")
+    plt.legend()
+    plt.grid(alpha=0.3)
+    plt.tight_layout()
+    plt.savefig(filename, dpi=150)
+    plt.show()
+
+
+def plot_residuals(yhat_train, resid_train, yhat_test, resid_test,
+                   target, filename, title):
+    plt.figure(figsize=(7, 6))
+    plt.scatter(yhat_train, resid_train, alpha=0.7, label="Train",
+                color="steelblue", edgecolor="k")
+    plt.scatter(yhat_test,  resid_test,  alpha=0.9, label="Test",
+                color="darkorange", marker="^", edgecolor="k")
+    plt.axhline(0, color="k", linestyle="--", lw=1)
+    plt.xlabel(f"Predicted  {target}")
+    plt.ylabel("Residual  (actual − predicted)")
+    plt.title(f"Residuals vs Predicted — {title}")
+    plt.legend()
+    plt.grid(alpha=0.3)
+    plt.tight_layout()
+    plt.savefig(filename, dpi=150)
+    plt.show()
+
+
+# ---------------------------------------------------------------------------
+# 3. Generic regression runner (fit + report + 2 graphs)
+# ---------------------------------------------------------------------------
+def run_regression(data, target, predictors, title, plot_tag):
     subset = data[[target] + predictors].dropna()
     X = subset[predictors].values
     y = subset[target].values
@@ -66,7 +112,23 @@ def run_regression(data, target, predictors, title):
     X_sm = sm.add_constant(X_train)
     sm_model = sm.OLS(y_train, X_sm).fit()
 
-    # --- build a textual report ---
+    # --- TWO plots per regression ---------------------------------------
+    plot_pred_vs_actual(
+        y_train, y_pred_train, y_test, y_pred_test,
+        target=target,
+        r2_train=r2_train, r2_test=r2_test,
+        filename=f"{plot_tag}_pred_vs_actual.png",
+        title=title,
+    )
+    plot_residuals(
+        y_pred_train, y_train - y_pred_train,
+        y_pred_test,  y_test  - y_pred_test,
+        target=target,
+        filename=f"{plot_tag}_residuals.png",
+        title=title,
+    )
+
+    # --- build a textual report -----------------------------------------
     lines = []
     lines.append("=" * 78)
     lines.append(title)
@@ -74,8 +136,9 @@ def run_regression(data, target, predictors, title):
     lines.append(f"Target          : {target}")
     lines.append(f"Predictors      : {', '.join(predictors)}")
     lines.append(f"Rows used       : {len(subset)}  (train={len(X_train)}, test={len(X_test)})")
+    lines.append(f"random_state    : {randnumb}")
     lines.append("")
-    lines.append("--- sklearn LinearRegression (70/30 split) -----------------------------------")
+    lines.append("--- sklearn LinearRegression (75/25 split) -----------------------------------")
     lines.append(f"R^2  (train)    : {r2_train:.4f}")
     lines.append(f"R^2  (test)     : {r2_test:.4f}")
     lines.append(f"RMSE (train)    : {rmse_train:.4f}")
@@ -118,13 +181,14 @@ def run_regression(data, target, predictors, title):
 
 
 # ---------------------------------------------------------------------------
-# 3. Run the two regressions
+# 4. Run the two regressions
 # ---------------------------------------------------------------------------
 report1 = run_regression(
     df,
     target=GDP_CAP,
     predictors=[URBAN, LIFE, CO2],
     title="MODEL 1 - GDP per Capita ~ Urban Population + CO2 Emissions + Life Expectancy",
+    plot_tag="model1",
 )
 
 report2 = run_regression(
@@ -132,10 +196,11 @@ report2 = run_regression(
     target=LIFE,
     predictors=[WATER, ELEC, GDP_CAP],
     title="MODEL 2 - Life Expectancy ~ Basic Water Access + Access to Electricity + GDP per Capita",
+    plot_tag="model2",
 )
 
 # ---------------------------------------------------------------------------
-# 4. Save everything
+# 5. Save everything
 # ---------------------------------------------------------------------------
 full_report = (
     "Multilinear Regression Report - Southeast Asia dataset\n"
@@ -150,3 +215,5 @@ with open("regression_report.txt", "w", encoding="utf-8") as f:
 
 print(full_report)
 print("\nReport written to regression_report.txt")
+print("Plots saved: model1_pred_vs_actual.png, model1_residuals.png,"
+      " model2_pred_vs_actual.png, model2_residuals.png")

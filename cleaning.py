@@ -15,6 +15,7 @@ df['Year'] = df['Year'].str.extract(r'(\d{4})')
 #remove values for line 15 in columns 3 to 11
 for i in df.columns[3:11]:
     df.loc[14, i] = "NaN"
+    df.loc[15, i] = "NaN"
 
 # remove % signs and convert to numeric
 for i in df.columns[2:11]:

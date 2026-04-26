@@ -5,67 +5,68 @@ Multilinear Regression Report - Southeast Asia dataset
 MODEL 1 - GDP per Capita ~ Urban Population + CO2 Emissions + Life Expectancy
 ==============================================================================
 Target          : GDP per Capita (USD)
-Predictors      : Urban Population (%), CO2 Emissions per Capita (metric tons), Life Expectancy at Birth (years)
-Rows used       : 48  (train=36, test=12)
+Predictors      : Urban Population (%), Life Expectancy at Birth (years), CO2 Emissions per Capita (metric tons)
+Rows used       : 47  (train=35, test=12)
+random_state    : 1704
 
---- sklearn LinearRegression (70/30 split) -----------------------------------
-R^2  (train)    : 0.7870
-R^2  (test)     : -3.2047
-RMSE (train)    : 9103.8634
-RMSE (test)     : 33517.5206
-Intercept       : -146918.8606
-  beta[Urban Population (%)                         ] = +490.886330
-  beta[CO2 Emissions per Capita (metric tons)       ] = -792.347955
-  beta[Life Expectancy at Birth (years)             ] = +1860.435244
+--- sklearn LinearRegression (75/25 split) -----------------------------------
+R^2  (train)    : 0.8111
+R^2  (test)     : 0.4957
+RMSE (train)    : 8961.7143
+RMSE (test)     : 8537.3925
+Intercept       : -114552.4990
+  beta[Urban Population (%)                         ] = +569.162777
+  beta[Life Expectancy at Birth (years)             ] = +1358.718731
+  beta[CO2 Emissions per Capita (metric tons)       ] = -308.754205
 
 --- statsmodels OLS (same training set, gives p-values) ---------------------
-R^2             : 0.7870
-Adjusted R^2    : 0.7670
-F-statistic     : 39.4119
-Prob (F-stat)   : 7.412e-11
+R^2             : 0.8111
+Adjusted R^2    : 0.7928
+F-statistic     : 44.3752
+Prob (F-stat)   : 2.491e-11
 
 Variable                                                 coef    std err        t      P>|t|     [0.025     0.975]
 ------------------------------------------------------------------------------------------------------------------
-const                                            -146918.8606 33352.5766   -4.405  0.0001109 -214855.8360 -78981.8851
-Urban Population (%)                                 490.8863   113.0003    4.344   0.000132   260.7122   721.0604
-CO2 Emissions per Capita (metric tons)              -792.3480   504.5190   -1.571     0.1261 -1820.0195   235.3236
-Life Expectancy at Birth (years)                    1860.4352   505.4943    3.680  0.0008516   830.7770  2890.0935
+const                                            -114552.4990 32692.0397   -3.504   0.001418 -181228.3534 -47876.6445
+Urban Population (%)                                 569.1628   116.5896    4.882  3.013e-05   331.3766   806.9489
+Life Expectancy at Birth (years)                    1358.7187   500.2511    2.716     0.0107   338.4499  2378.9876
+CO2 Emissions per Capita (metric tons)              -308.7542   362.2308   -0.852     0.4005 -1047.5287   430.0203
 
 Significance (alpha = 0.05):
-  const                                            p = 0.0001109  -> SIGNIFICANT
-  Urban Population (%)                             p = 0.000132  -> SIGNIFICANT
-  CO2 Emissions per Capita (metric tons)           p = 0.1261  -> not significant
-  Life Expectancy at Birth (years)                 p = 0.0008516  -> SIGNIFICANT
+  const                                            p = 0.001418  -> SIGNIFICANT
+  Urban Population (%)                             p = 3.013e-05  -> SIGNIFICANT
+  Life Expectancy at Birth (years)                 p = 0.0107  -> SIGNIFICANT
+  CO2 Emissions per Capita (metric tons)           p = 0.4005  -> not significant
 
 Full statsmodels summary:
                             OLS Regression Results                            
 ==============================================================================
-Dep. Variable:                      y   R-squared:                       0.787
-Model:                            OLS   Adj. R-squared:                  0.767
-Method:                 Least Squares   F-statistic:                     39.41
-Date:                Wed, 22 Apr 2026   Prob (F-statistic):           7.41e-11
-Time:                        14:08:51   Log-Likelihood:                -379.27
-No. Observations:                  36   AIC:                             766.5
-Df Residuals:                      32   BIC:                             772.9
+Dep. Variable:                      y   R-squared:                       0.811
+Model:                            OLS   Adj. R-squared:                  0.793
+Method:                 Least Squares   F-statistic:                     44.38
+Date:                Sun, 26 Apr 2026   Prob (F-statistic):           2.49e-11
+Time:                        14:12:10   Log-Likelihood:                -368.19
+No. Observations:                  35   AIC:                             744.4
+Df Residuals:                      31   BIC:                             750.6
 Df Model:                           3                                         
 Covariance Type:            nonrobust                                         
 ==============================================================================
                  coef    std err          t      P>|t|      [0.025      0.975]
 ------------------------------------------------------------------------------
-const      -1.469e+05   3.34e+04     -4.405      0.000   -2.15e+05    -7.9e+04
-x1           490.8863    113.000      4.344      0.000     260.712     721.060
-x2          -792.3480    504.519     -1.571      0.126   -1820.019     235.324
-x3          1860.4352    505.494      3.680      0.001     830.777    2890.094
+const      -1.146e+05   3.27e+04     -3.504      0.001   -1.81e+05   -4.79e+04
+x1           569.1628    116.590      4.882      0.000     331.377     806.949
+x2          1358.7187    500.251      2.716      0.011     338.450    2378.988
+x3          -308.7542    362.231     -0.852      0.401   -1047.529     430.020
 ==============================================================================
-Omnibus:                        1.907   Durbin-Watson:                   2.385
-Prob(Omnibus):                  0.385   Jarque-Bera (JB):                1.335
-Skew:                           0.472   Prob(JB):                        0.513
-Kurtosis:                       3.015   Cond. No.                     1.91e+03
+Omnibus:                        0.950   Durbin-Watson:                   1.839
+Prob(Omnibus):                  0.622   Jarque-Bera (JB):                0.224
+Skew:                          -0.066   Prob(JB):                        0.894
+Kurtosis:                       3.368   Cond. No.                     1.90e+03
 ==============================================================================
 
 Notes:
 [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
-[2] The condition number is large, 1.91e+03. This might indicate that there are
+[2] The condition number is large, 1.9e+03. This might indicate that there are
 strong multicollinearity or other numerical problems.
 
 
@@ -74,64 +75,65 @@ MODEL 2 - Life Expectancy ~ Basic Water Access + Access to Electricity + GDP per
 ==============================================================================
 Target          : Life Expectancy at Birth (years)
 Predictors      : Basic Drinking Water Access (%), Access to Electricity (% of population), GDP per Capita (USD)
-Rows used       : 48  (train=36, test=12)
+Rows used       : 47  (train=35, test=12)
+random_state    : 1237
 
---- sklearn LinearRegression (70/30 split) -----------------------------------
-R^2  (train)    : 0.8649
-R^2  (test)     : -1.1278
-RMSE (train)    : 4.7545
-RMSE (test)     : 5.2783
-Intercept       : 1.3864
-  beta[Basic Drinking Water Access (%)              ] = +1.051123
-  beta[Access to Electricity (% of population)      ] = -0.283959
-  beta[GDP per Capita (USD)                         ] = +0.000050
+--- sklearn LinearRegression (75/25 split) -----------------------------------
+R^2  (train)    : 0.7682
+R^2  (test)     : 0.4999
+RMSE (train)    : 2.3707
+RMSE (test)     : 3.1635
+Intercept       : 52.5145
+  beta[Basic Drinking Water Access (%)              ] = +0.192238
+  beta[Access to Electricity (% of population)      ] = +0.013048
+  beta[GDP per Capita (USD)                         ] = +0.000153
 
 --- statsmodels OLS (same training set, gives p-values) ---------------------
-R^2             : 0.8649
-Adjusted R^2    : 0.8522
-F-statistic     : 68.2839
-Prob (F-stat)   : 5.318e-14
+R^2             : 0.7682
+Adjusted R^2    : 0.7457
+F-statistic     : 34.2422
+Prob (F-stat)   : 5.812e-10
 
 Variable                                                 coef    std err        t      P>|t|     [0.025     0.975]
 ------------------------------------------------------------------------------------------------------------------
-const                                                  1.3864     5.3634    0.259     0.7977    -9.5385    12.3113
-Basic Drinking Water Access (%)                        1.0511     0.1231    8.538  9.321e-10     0.8004     1.3019
-Access to Electricity (% of population)               -0.2840     0.0902   -3.149   0.003537    -0.4676    -0.1003
-GDP per Capita (USD)                                   0.0001     0.0000    1.152     0.2578    -0.0000     0.0001
+const                                                 52.5145     5.7982    9.057  3.229e-10    40.6890    64.3400
+Basic Drinking Water Access (%)                        0.1922     0.0916    2.099    0.04402     0.0055     0.3790
+Access to Electricity (% of population)                0.0130     0.0447    0.292     0.7723    -0.0781     0.1042
+GDP per Capita (USD)                                   0.0002     0.0000    6.178  7.392e-07     0.0001     0.0002
 
 Significance (alpha = 0.05):
-  const                                            p = 0.7977  -> not significant
-  Basic Drinking Water Access (%)                  p = 9.321e-10  -> SIGNIFICANT
-  Access to Electricity (% of population)          p = 0.003537  -> SIGNIFICANT
-  GDP per Capita (USD)                             p = 0.2578  -> not significant
+  const                                            p = 3.229e-10  -> SIGNIFICANT
+  Basic Drinking Water Access (%)                  p = 0.04402  -> SIGNIFICANT
+  Access to Electricity (% of population)          p = 0.7723  -> not significant
+  GDP per Capita (USD)                             p = 7.392e-07  -> SIGNIFICANT
 
 Full statsmodels summary:
                             OLS Regression Results                            
 ==============================================================================
-Dep. Variable:                      y   R-squared:                       0.865
-Model:                            OLS   Adj. R-squared:                  0.852
-Method:                 Least Squares   F-statistic:                     68.28
-Date:                Wed, 22 Apr 2026   Prob (F-statistic):           5.32e-14
-Time:                        14:08:51   Log-Likelihood:                -107.21
-No. Observations:                  36   AIC:                             222.4
-Df Residuals:                      32   BIC:                             228.8
+Dep. Variable:                      y   R-squared:                       0.768
+Model:                            OLS   Adj. R-squared:                  0.746
+Method:                 Least Squares   F-statistic:                     34.24
+Date:                Sun, 26 Apr 2026   Prob (F-statistic):           5.81e-10
+Time:                        14:12:17   Log-Likelihood:                -79.874
+No. Observations:                  35   AIC:                             167.7
+Df Residuals:                      31   BIC:                             174.0
 Df Model:                           3                                         
 Covariance Type:            nonrobust                                         
 ==============================================================================
                  coef    std err          t      P>|t|      [0.025      0.975]
 ------------------------------------------------------------------------------
-const          1.3864      5.363      0.259      0.798      -9.538      12.311
-x1             1.0511      0.123      8.538      0.000       0.800       1.302
-x2            -0.2840      0.090     -3.149      0.004      -0.468      -0.100
-x3          5.003e-05   4.34e-05      1.152      0.258   -3.84e-05       0.000
+const         52.5145      5.798      9.057      0.000      40.689      64.340
+x1             0.1922      0.092      2.099      0.044       0.005       0.379
+x2             0.0130      0.045      0.292      0.772      -0.078       0.104
+x3             0.0002   2.48e-05      6.178      0.000       0.000       0.000
 ==============================================================================
-Omnibus:                        2.811   Durbin-Watson:                   2.301
-Prob(Omnibus):                  0.245   Jarque-Bera (JB):                2.174
-Skew:                           0.602   Prob(JB):                        0.337
-Kurtosis:                       2.982   Cond. No.                     1.65e+05
+Omnibus:                        2.414   Durbin-Watson:                   1.963
+Prob(Omnibus):                  0.299   Jarque-Bera (JB):                2.190
+Skew:                           0.535   Prob(JB):                        0.335
+Kurtosis:                       2.404   Cond. No.                     3.29e+05
 ==============================================================================
 
 Notes:
 [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
-[2] The condition number is large, 1.65e+05. This might indicate that there are
+[2] The condition number is large, 3.29e+05. This might indicate that there are
 strong multicollinearity or other numerical problems.
